@@ -1,0 +1,49 @@
+#include<iostream>
+#include<vector>
+#include<queue>
+#include<map>
+#include<unordered_map>
+#include<algorithm>
+#include<unordered_set>
+
+using namespace std;
+
+int countSubstrings(string s) {
+    vector<vector<bool>> dp(s.size(), vector<bool>(s.size(), false));
+    int result = 0;
+    for (int i = s.size() - 1; i >= 0; i++) {
+        for (int j = i; j < s.size(); j++) {
+            if (s[i] == s[j]) {
+                if (j - i <= 1) {
+                    result++;
+                    dp[i][j] = true;
+                } else if (dp[i + 1][j - 1]) {
+                    result++;
+                    dp[i][j] = true;
+                }
+            }
+        }
+    }
+    return result;
+}
+
+int minDistance(string word1, string word2) {
+    vector<vector<int>> dp(word1.size() + 1, vector<int>(word2.size() + 1, 0));
+    for (int i = 1; i <= word1.size(); i++) dp[i][0] = dp[i - 1][0] + 1;
+    for (int j = 1; j <= word2.size(); j++) dp[0][j] = dp[0][j - 1] + 1;
+    for (int i = 1; i <= word1.size(); i++) {
+        for (int j = 1; j <= word2.size(); j++) {
+            if (word1[i - 1] == word2[j - 1]) dp[i][j] = dp[i - 1][j - 1];
+            else dp[i][j] = min({ dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1] }) + 1;
+        }
+    }
+
+    return dp[word1.size()][word2.size()];
+}
+
+int main() {
+    string s = "horse";
+    string t = "ros";
+
+    auto result = minDistance(s, t);
+}
